@@ -5,7 +5,10 @@ creates a 2d array representing an island
 
 
 
-example of output below 
+example of output below
+(you probably will have to save and view as text file) 
+
+
 #####################################################
  0   =   water
  1   =   land
