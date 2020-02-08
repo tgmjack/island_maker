@@ -3,15 +3,17 @@ import java.io._
 //     to do
 // make executable which asks for input
 // new shapes {triangle      archepeligo}
-// significant features as well as imperfections
 // river , forests , hills...
+// deep water selection shouldnt include corners but does
+// cliffs
+//
 
 
 object islandmaker9 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
   
-  	def to_text_file (args: Array[Array[Int]], file_name:String){
-  		var file_name2 = file_name+".txt"
+  	def to_text_file (args: Array[Array[Int]], file_name:String,  list_of_features:Array[Array[Int]]){
+  		var file_name2 = file_name+".txt";
 			var mi_writer = new PrintWriter(new File(file_name2) )
 			mi_writer.write(" 0   =   water");mi_writer.println();
 			mi_writer.write(" 1   =   land");mi_writer.println();
@@ -51,16 +53,33 @@ object islandmaker9 {
 	    mi_writer.write(border_string2);
 	    mi_writer.println();
 			mi_writer.write(border_string);
+			mi_writer.println();
+			
+			mi_writer.write("               features");
+			mi_writer.println();
+			mi_writer.write(" x                y               type");
+			mi_writer.println();
+			var t1 = 0;
+			for ( t1<- 0 to list_of_features.length-1 )	{
+				var t2 = 0;
+				for (t2 <- 0 to list_of_features(0).length-1)	{
+				var feature_name="";
+					if (t2<2){mi_writer.write(list_of_features(t1)(t2).toString); mi_writer.write("       ,       ");}
+					else{println("above 2 ");if(list_of_features(t1)(t2)==0){mi_writer.write("shallows")} }
+					
+			}
+			mi_writer.println();
+			}
+			println("list_of_x_features"  + list_of_features);
 			println("making txt file");
 			
 			mi_writer.close()
-			}                         //> to_text_file: (args: Array[Array[Int]], file_name: String)Unit
+			}                         //> to_text_file: (args: Array[Array[Int]], file_name: String, list_of_features
+                                                  //| : Array[Array[Int]])Unit
 
   
   
   def replace_with (old:Int , new_un:Int, the_grid:Array[Array[Int]]){
-  
-  
   }                                               //> replace_with: (old: Int, new_un: Int, the_grid: Array[Array[Int]])Unit
   
   def find_edges2 (this_array:Array[Array[Int]])
@@ -306,7 +325,7 @@ object islandmaker9 {
       var e = 0;
       for(e <- 0 to this_array(0).length-1)
       {
-			var deepwater = true
+			var deepwater = true   // pptt true
  			 if (this_array(d)(e) == 0)
           {
  			 		var f = 0;
@@ -319,32 +338,93 @@ object islandmaker9 {
                 if (d == 2 || d == -2){howmanytwos+=1}
                 if (e == 2 || e == -2){howmanytwos+=1}
                 	if (howmanytwos < 2 && -1 < d+f && d+f < (this_array.length-1) && -1 < e+g && e+g < (this_array(0).length-1) ){
-                		if (this_array(d+f)(e+g) != 0 && this_array(d+f)(e+g) != 2){deepwater = false}
+	                
+                		if (this_array(d+f)(e+g) != 0 && this_array(d+f)(e+g) != 2 && this_array(d+f)(e+g) != 9){deepwater = false}
             	                                                                                                                  }
  			 		     }
           }
  			 		if (deepwater == true){
- 			 		
  			 		this_array(d)(e) = 2}
  	        }
         }
      }
   }                                               //> add_ocean: (this_array: Array[Array[Int]])Unit
   
-  def make_island(x:Int , y:Int , amount_land:Double, shape:String, imperfections:Int , name:String){
+  
+  
+  
+  def add_oceanic_features(number_of_features:Int, this_grid:Array[Array[Int]], r:scala.util.Random,list_of_features:Array[Array[Int]] ){
+  var nn = 0;
+  if(number_of_features > 0){
+  for(nn <- 0 to number_of_features-1){
+ // println("feature " + nn)
+  var feature_type = r.nextInt(2)
+  feature_type = 0;
+  var spot_chosen = false;
+  var x = r.nextInt(this_grid(0).length-1);  var y = r.nextInt(this_grid.length-1);
+  while(spot_chosen == false){ x = r.nextInt(this_grid(0).length-1);  y = r.nextInt(this_grid.length-1);
+   		spot_chosen = true;
+   		x = r.nextInt(this_grid(0).length-1); y = r.nextInt(this_grid.length-1);
+   		var f = 0;
+         for(f <- -2 to 3)
+            {
+            var g = 0;
+            for(g <- -3 to 2)
+              {
+              if (-1 < y+f && y+f < (this_grid.length-1) && -1 < x+g && x+g < (this_grid(0).length-1)){
+              //  println("on the map ")
+              if (this_grid(y+f)(x+g) != 2){spot_chosen = false;   //println("not here y" + (y) + "     x " + (x));
+              }}
+							 // println(" yoooo hoooo  ")
+               }}
+  
+  
+   }
+   	 list_of_features(nn)(0) = x
+   	 list_of_features(nn)(1) = y
+   	 list_of_features(nn)(2) = feature_type
+   	 
+
+     println(" past loop  ")
+  // make random rocks and shallow water
+  var f = 0;
+         for(f <- -3 to 3)
+            {
+            var g = 0;
+            for(g <- -3 to 3)
+              {
+              
+              if (-1 < y+f && y+f < (this_grid.length-1) && -1 < x+g && x+g < (this_grid(0).length-1)){
+              var random_num = r.nextInt(3); if (random_num == 0){this_grid(y+f)(x+g) = 9}; if (random_num == 1){this_grid(y+f)(x+g) = 0}
+              
+              }    }}
+  
+  }}
+  }                                               //> add_oceanic_features: (number_of_features: Int, this_grid: Array[Array[Int
+                                                  //| ]], r: scala.util.Random, list_of_features: Array[Array[Int]])Unit
+  
+  def make_island(x:Int , y:Int , amount_land:Double, shape:String, imperfections:Int , name:String, num_of_oceanic_features:Int){
+  	
   	val r = scala.util.Random
   	var this_grid = make_grid(x,y)
+  	var jjj = 0;
+  	
+  	var list_of_features = Array.fill(num_of_oceanic_features, 3)(0)
+  	
+  	
   	add_initial_land(this_grid, amount_land, shape)
   	find_edges(this_grid)
   	add_imperfections(this_grid,imperfections,r)
   	this_grid(this_grid.length-2)(this_grid(0).length-2) = 9;    //  first index is y second is x
   	add_ocean(this_grid)
-  	to_text_file(this_grid, name)
+  	add_oceanic_features(num_of_oceanic_features, this_grid,r,list_of_features)
+  	// add_costal_features()
+  	//
+  	to_text_file(this_grid, name,list_of_features)
   	println("DONE")
   }                                               //> make_island: (x: Int, y: Int, amount_land: Double, shape: String, imperfec
                                                   //| tions: Int, name: String)Unit
                                                   
-  // x dimension, y dimension, ratio of water to land, which shape, number of imperfections
-  make_island(60,20 ,0.5,"square",20, "jackland") 
-                                                  
-}
+  // x dimension, y dimension, ratio of water to land, which shape, number of imperfections, name, number of significant oceanic features
+  make_island(80,30 ,0.4,"square",20, "jackland new",4)
+ }
