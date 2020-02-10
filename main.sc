@@ -1,12 +1,20 @@
 import java.io._
+// USE THE MAKE_ISLAND FUNCTION AT THE BOTTOM OF THE SCRIPT
+
+
+
 
 //     to do
+// move x ticks to bottom
+// neaten up
+// consistent sized gaps between x axis as numbers get bigger means its wrong ....... AT LEAST WORKS TO THE HUNDREDS NOW JUST NEEDS FINISHING
 // make executable which asks for input
 // new shapes {triangle      archepeligo}
-// river , forests , hills...
+// new land features {river , forests , hills}
 // deep water selection shouldnt include corners but does
 // cliffs
-//
+
+
 
 
 object islandmaker9 {
@@ -19,41 +27,81 @@ object islandmaker9 {
 			mi_writer.write(" 1   =   land");mi_writer.println();
 			mi_writer.write(" 2   =   deep water");mi_writer.println();
 			mi_writer.write(" 3   =   beach"); mi_writer.println();
+			mi_writer.write(" 7   =   hill"); mi_writer.println();
+			mi_writer.write(" 8   =   mountain"); mi_writer.println();
 			mi_writer.write(" 9   =   rock");mi_writer.println();mi_writer.println();
 			mi_writer.println();
 			var k = 0;
-			var border_string = "";
+			var border_string = "    ";
 	      for(k <- 0 to args(0).length+5){border_string+= "#";}
-			var border_string2 = "#";
-			for(k <- 0 to args(0).length+3){border_string2+= " " }
-			border_string2+= "#" ;
+			var border_string2 = "    #";
+			for(k <- 0 to args(0).length-1){border_string2+= " " }
+			border_string2+= "    #" ;
 			var title_string= "" ;
 			var num_of_spaces = args(0).length+5 - file_name.length
 			var sp = 0;
 			for(sp <- 0 to num_of_spaces/2){title_string += " "
 	      }
 			title_string = title_string + file_name
+			mi_writer.println();
+			
+			
+			
 			
 			mi_writer.println();
 			mi_writer.write(title_string);
 	    mi_writer.println();
+	    
+	    		mi_writer.write("       ")
+    var dd = 0;
+    var x_tick_dist = 6; // keep above 3
+    var space_counter = 0;
+     for(dd <- 0 to args(0).length-1){  if ( dd%x_tick_dist==0){   mi_writer.write(dd.toString); }
+	    else{ space_counter += 1; if (dd<10){mi_writer.write(" ")}; if (space_counter%x_tick_dist != 0 && dd > 9 && dd < 99  ){mi_writer.write(" ")}; if(dd > 99){ if ((dd+1)%x_tick_dist == 0|| (dd+2)%x_tick_dist == 0 || (dd+3)%x_tick_dist == 0 ){mi_writer.write(" ")};}}}
+	    mi_writer.println();
+	    
+	    
+	    
 			mi_writer.write(border_string);
 	    mi_writer.println();
 			mi_writer.write(border_string2);
 	    mi_writer.println();
+	    mi_writer.write("");
+	    
+	    
+	    
+	    
+	    
+	    
+	   // ####################
+	    
+	// print every 6th num
+	//    var dd = 0;
+	//    for(dd <- 0 to args(0).length-1){  if ( dd%6==0){   mi_writer.write(dd);}
+	//    }
+	//    mi_writer.println();
+	    
 			var d = 0;
 	    for(d <- 0 to args.length-1){
-	      mi_writer.write( "#  " );
+	    if (d<10){mi_writer.write(" "); }
+	    if (d<100){mi_writer.write(" "); }
+	    if (d<1000){mi_writer.write(" "); }
+	      mi_writer.write( d+"#  " );
 	      var e = 0;
 	      for(e <- 0 to args(0).length-1){
 	      	mi_writer.write(args(d)(e).toString);
 	      	                             }
 	    mi_writer.write("  #");
 	    mi_writer.println(); }
+	    
+	    
+	    // ######################
+	    
+	    
 	    mi_writer.write(border_string2);
 	    mi_writer.println();
 			mi_writer.write(border_string);
-			mi_writer.println();
+			mi_writer.println();mi_writer.println();mi_writer.println();
 			
 			mi_writer.write("               features");
 			mi_writer.println();
@@ -65,7 +113,9 @@ object islandmaker9 {
 				for (t2 <- 0 to list_of_features(0).length-1)	{
 				var feature_name="";
 					if (t2<2){mi_writer.write(list_of_features(t1)(t2).toString); mi_writer.write("       ,       ");}
-					else{println("above 2 ");if(list_of_features(t1)(t2)==0){mi_writer.write("shallows")} }
+					else{println("above 2 ");if(list_of_features(t1)(t2)==0){mi_writer.write("shallows")}
+					if(list_of_features(t1)(t2)==8){mi_writer.write("mountain")}
+					}
 					
 			}
 			mi_writer.println();
@@ -138,6 +188,10 @@ object islandmaker9 {
   											                                       	}
   												
   
+                        }
+                        if (shape == "triangle"){
+                        // define corners based on wateer amount. fill
+                        
                         }
   
   
@@ -377,8 +431,7 @@ object islandmaker9 {
               }}
 							 // println(" yoooo hoooo  ")
                }}
-  
-  
+    
    }
    	 list_of_features(nn)(0) = x
    	 list_of_features(nn)(1) = y
@@ -403,13 +456,86 @@ object islandmaker9 {
   }                                               //> add_oceanic_features: (number_of_features: Int, this_grid: Array[Array[Int
                                                   //| ]], r: scala.util.Random, list_of_features: Array[Array[Int]])Unit
   
-  def make_island(x:Int , y:Int , amount_land:Double, shape:String, imperfections:Int , name:String, num_of_oceanic_features:Int){
+  def add_land_features(num_of_oceanic_features:Int, num_of_land_features:Int, this_grid:Array[Array[Int]],r:scala.util.Random ,list_of_features:Array[Array[Int]]){
+  
+  var nn = 0;
+  if(num_of_land_features > 0){
+  for(nn <- 0 to num_of_land_features-1){
+ // println("feature " + nn)
+  //var feature_type = r.nextInt(8)  // 8 = mountain     make start from 8
+  var feature_type = 8;
+  var spot_chosen = false;
+  var x = r.nextInt(this_grid(0).length-1);  var y = r.nextInt(this_grid.length-1);
+  while(spot_chosen == false){ x = r.nextInt(this_grid(0).length-1);  y = r.nextInt(this_grid.length-1);
+   		spot_chosen = true;
+   		x = r.nextInt(this_grid(0).length-1); y = r.nextInt(this_grid.length-1);
+   		var f = 0;
+         for(f <- -2 to 2)
+            {
+            var g = 0;
+            for(g <- -2 to 2)
+              {
+              if (-1 < y+f && y+f < (this_grid.length-1) && -1 < x+g && x+g < (this_grid(0).length-1)){
+              //  println("on the map ")
+              if (this_grid(y+f)(x+g) != 1){spot_chosen = false;   //println("not here y" + (y) + "     x " + (x));
+              }}
+							 // println(" yoooo hoooo  ")
+               }}
+    
+   }
+   
+   list_of_features(num_of_oceanic_features-1 + nn)(0) = x
+   	 list_of_features(num_of_oceanic_features-1 + nn)(1) = y
+   	 list_of_features(num_of_oceanic_features-1 + nn) (2) = feature_type
+   if (feature_type == 8){
+   var f2 = 0;
+         for(f2 <- -3 to 3)
+            {
+            var g2 = 0;
+            for(g2 <- -3 to 3)
+              {var rock_rand = r.nextInt(3);
+              if (rock_rand==0)
+              {
+              this_grid(y+f2)(x+g2) = 9;
+              }
+              
+              }}
+   
+   		var f = 0;
+   		
+         for(f <- -1 to 1)
+            {
+            var g = 0;
+            for(g <- -1 to 1)
+              {
+						   
+   
+   				
+   				this_grid(y+f)(x+g) = 7;
+   				this_grid(y)(x) = 8;
+   				
+   		}}
+   }
+   
+  
+  
+  }
+  
+  }
+  
+  }                                               //> add_land_features: (num_of_oceanic_features: Int, num_of_land_features: In
+                                                  //| t, this_grid: Array[Array[Int]], r: scala.util.Random, list_of_features: A
+                                                  //| rray[Array[Int]])Unit
+  
+  
+  
+  def make_island(x:Int , y:Int , amount_land:Double, shape:String, imperfections:Int , name:String, num_of_oceanic_features:Int, num_of_land_features:Int){
   	
   	val r = scala.util.Random
   	var this_grid = make_grid(x,y)
   	var jjj = 0;
   	
-  	var list_of_features = Array.fill(num_of_oceanic_features, 3)(0)
+  	var list_of_features = Array.fill((num_of_oceanic_features + num_of_land_features)-1, 3)(0)
   	
   	
   	add_initial_land(this_grid, amount_land, shape)
@@ -418,13 +544,16 @@ object islandmaker9 {
   	this_grid(this_grid.length-2)(this_grid(0).length-2) = 9;    //  first index is y second is x
   	add_ocean(this_grid)
   	add_oceanic_features(num_of_oceanic_features, this_grid,r,list_of_features)
+  	add_land_features(num_of_oceanic_features,num_of_land_features, this_grid,r,list_of_features)
   	// add_costal_features()
   	//
   	to_text_file(this_grid, name,list_of_features)
   	println("DONE")
   }                                               //> make_island: (x: Int, y: Int, amount_land: Double, shape: String, imperfec
-                                                  //| tions: Int, name: String)Unit
+                                                  //| tions: Int, name: String, num_of_oceanic_features: Int, num_of_land_featur
+                                                  //| es: Int)Unit
                                                   
   // x dimension, y dimension, ratio of water to land, which shape, number of imperfections, name, number of significant oceanic features
-  make_island(80,30 ,0.4,"square",20, "jackland new",4)
- }
+  make_island(140,30 ,0.4,"square",20, "jackland 1",3,2)
+                                                  
+}
