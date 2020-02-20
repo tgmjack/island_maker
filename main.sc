@@ -1,26 +1,13 @@
+import scala.io.Source
 import java.io._
-// USE THE MAKE_ISLAND FUNCTION AT THE BOTTOM OF THE SCRIPT
+import java.awt.image.BufferedImage
+import java.awt.{Graphics2D,Rectangle,Color,Font,BasicStroke}
+import java.awt.geom._
 
+// scroll to bottom to define your island
 
-
-
-//     to do
-// move x ticks to bottom
-// neaten up
-// consistent sized gaps between x axis as numbers get bigger means its wrong ....... AT LEAST WORKS TO THE HUNDREDS NOW JUST NEEDS FINISHING
-// make executable which asks for input
-// new shapes {triangle      archepeligo}
-// new land features {river , forests , hills}
-// deep water selection shouldnt include corners but does
-// cliffs
-
-
-
-
-object islandmaker9 {
-  println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
-  
-  	def to_text_file (args: Array[Array[Int]], file_name:String,  list_of_features:Array[Array[Int]]){
+object make_island {
+  def to_text_file (args: Array[Array[Int]], file_name:String,  list_of_features:Array[Array[Int]]){
   		var file_name2 = file_name+".txt";
 			var mi_writer = new PrintWriter(new File(file_name2) )
 			mi_writer.write(" 0   =   water");mi_writer.println();
@@ -239,7 +226,7 @@ object islandmaker9 {
   }                                               //> make_grid: (x: Int, y: Int)Array[Array[Int]]
   
   
-  
+                                                                                                                                                                                                                 
   def add_imperfections(this_grid:Array[Array[Int]],imperfections:Int, r:scala.util.Random){
  var ii = 0;
   for (ii <- 0 to imperfections){
@@ -548,12 +535,189 @@ object islandmaker9 {
   	// add_costal_features()
   	//
   	to_text_file(this_grid, name,list_of_features)
-  	println("DONE")
+  	draw(this_grid)
   }                                               //> make_island: (x: Int, y: Int, amount_land: Double, shape: String, imperfec
                                                   //| tions: Int, name: String, num_of_oceanic_features: Int, num_of_land_featur
                                                   //| es: Int)Unit
+  def draw(map : Array[Array[Int]]){
+		
+		val size = (30 * (map(0).length-1), 30 * (map.length-1))
+		val canvas = new BufferedImage(size._1, size._2, BufferedImage.TYPE_INT_RGB)
+		val g = canvas.createGraphics()
+		g.setColor(Color.WHITE)
+		g.fillRect(0, 0, canvas.getWidth, canvas.getHeight)
+		g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
+		
+		var d = 0;
+			for(d <- 0 to map.length-1){
+			      var e = 0;
+			      for(e <- 0 to map(0).length-1){
+			      
+			     		println("yoo hoo")
+			      	if(map(d)(e) == 2){g.setColor(Color.BLUE); g.fill(new Rectangle(e*30, d*30, 30, 30));}
+			      	if(map(d)(e) == 1){g.setColor(Color.GREEN); g.fill(new Rectangle(e*30, d*30, 30, 30));}
+			      	if(map(d)(e) == 3){g.setColor(Color.ORANGE); g.fill(new Rectangle(e*30, d*30, 30, 30));}
+			      	if(map(d)(e) == 0){g.setColor(Color.CYAN); g.fill(new Rectangle(e*30, d*30, 30, 30));}
+			      	if(map(d)(e) == 7){g.setColor(Color.green.darker()); g.fill(new Rectangle(e*30, d*30, 30, 30));}
+			      	if(map(d)(e) == 8){g.setColor(Color.GRAY); g.fill(new Rectangle(e*30, d*30, 30, 30));}
+			      	if(map(d)(e) == 9){g.setColor(Color.LIGHT_GRAY); g.fill(new Rectangle(e*30, d*30, 30, 30));}
+																					}
+																	}
+g.dispose()
+javax.imageio.ImageIO.write(canvas, "png", new java.io.File("island_drawing.png"))
+}                                                 //> draw: (map: Array[Array[Int]])Unit
+
+def to_text_file_mini (args: Array[Array[Int]])
+	{
+		var mi_writer = new PrintWriter(new File("mini.txt") );
+		
+		var d = 0;
+		
+		for(d <- 0 to args.length-1)
+		{
+		      var e = 0;
+		      for(e <- 0 to args(0).length-1){
+		      	//mi_writer.write(args(d)(e).toString);
+		      	                             }
+		        mi_writer.println();
+		        //println("newline")
+		}
+mi_writer.close()
+}                                                 //> to_text_file_mini: (args: Array[Array[Int]])Unit
+
+		
+		def read_text_file_and_build_island(filename:String): Array[Array[Int]] = {
+		// read txt file
+		// make array
+		println("1");
+		var tick = 0
+		var x = 0
+		var y = 0;
+		var y_ticker = 0;
+		var found_island=0;
+		var zeroes = "000";
+		var twos = "222";
+		var ones = "111";
+		var threes = "333";
+		var sevens = "777";
+		var eigths = "888";
+		var nines = "999";
+		var x_length = 0;
+		var x_length_set = false;
+		var hash = "####" // very stupid solution
+		for (line <- Source.fromFile(filename).getLines) {
+		    
+		    //if (line.length>7){//println("b1  >" + line(7)+ "<    " + line(7).getType);
+		    //if(line(7).equals('#')){println("hashtag")}}
+		    //println(line.getType)
+		    if (line.length>7){
+		    //	println(">7");
+		    
+		    if (line(9).equals(hash(0)) && line(10).equals(hash(0)) && line(11).equals(hash(0)) && line(7).equals(hash(0)) && line(8).equals(hash(0))){if ( found_island == 0 ){
+		    println("b2 " + (line.length-5).toString);
+		    found_island=2;
+		    x = line.length-6;
+		    }}}
+		    if (found_island == 1 && x_length_set == false && line(3).equals(zeroes(0)))
+		    { println("x_ counter "); for (xtt <- 0 to line.length-1){if ( line(xtt).equals(twos(0)) || line(xtt).equals(ones(0)) || line(xtt).equals(threes(0)) || line(xtt).equals(sevens(0)) || line(xtt).equals(eigths(0)) || line(xtt).equals(nines(0)) ) {x_length +=1;}  }
+		    x = x_length - 1;
+		    x_length_set = true;
+		    }
+		    //println("2");
+		    if (found_island == 1 || found_island == 2){ y_ticker += 1 }
+		    if (line.length > 6){
+		    if (line(9).equals(hash(0)) && line(10).equals(hash(0)) && line(11).equals(hash(0)) && line(7).equals(hash(0)) && line(8).equals(hash(0)) ){if ( found_island == 1 ){
+		    found_island=0;
+		    y = y_ticker-4;
+		    }}
+		    if (found_island == 2){found_island = 1}
+		}}
+		println("3  x = "+x +"         y = "+y);
+		var the_grid = Array.fill(y, x)(0);
+		
+		/*var dd = 0;
+			for(dd <- 0 to the_grid.length-1){
+			      var ee = 0;
+			      for(ee <- 0 to the_grid(0).length-1){
+			      	println(the_grid(dd)(ee).toString);
+			      	                             			}
+			        println("new line in grid");
+			      	                             }
+		*/
+		var first_x = 0;
+		found_island=0;
+		y_ticker = -1;
+		var x_start = false;
+		for (line <- Source.fromFile(filename).getLines) {
+		    if (line.length > 10){
+		    if (line(9).equals(hash(0)) && line(10).equals(hash(0)) && line(11).equals(hash(0)) && line(7).equals(hash(0)) && line(8).equals(hash(0))){if ( found_island == 0 ){
+		    found_island=2;
+		    println("2nd time through");
+		    }}}
+		    //println("4");
+		    if (found_island == 1 && (line(12).equals(twos(0)) || line(15).equals(twos(0)) || line(line.length-10).equals(twos(0))))
+		    {  y_ticker +=1;   var x_ticker = 0;
+		    	for(x_ticker <- 0 to x-1)
+		    	{
+		    	if (x_start == false){
+		    	if (line.length > x_ticker){
+		    	   if (line(x_ticker).equals(twos(0))){first_x = x_ticker; x_start = true;}
+		    			
+		    			if (line(x_ticker).equals(ones(0))){first_x = x_ticker; x_start = true;}
+		    			
+		    			if (line(x_ticker).equals(threes(0))){first_x = x_ticker; x_start = true;}
+		    			
+		    			if (line(x_ticker).equals(sevens(0))){first_x = x_ticker; x_start = true;}
+		    			
+		    			if (line(x_ticker).equals(eigths(0))){ first_x = x_ticker; x_start = true;}
+		    			
+		    			if (line(x_ticker).equals(nines(0))){ first_x = x_ticker; x_start = true;}
+							  }
+							}
+		    	
+		    		if (x_start == true){
+		    		if (line.length+first_x > x_ticker){
+		    			
+		    			if (line(x_ticker+first_x).equals(twos(0))){ /*println(the_grid(y_ticker)(x_ticker-7) + " is now ");*/ the_grid(y_ticker)(x_ticker)= 2; /*println(the_grid(y_ticker)(x_ticker-7));*/}
+		    			
+		    			if (line(x_ticker+first_x).equals(ones(0))){ /*println(the_grid(y_ticker)(x_ticker-7) + " is now ");*/ the_grid(y_ticker)(x_ticker)= 1; /*println(the_grid(y_ticker)(x_ticker-7));*/}
+		    			
+		    			if (line(x_ticker+first_x).equals(threes(0))){ /*println(the_grid(y_ticker)(x_ticker-7) + " is now ");*/ the_grid(y_ticker)(x_ticker)= 3; /*println(the_grid(y_ticker)(x_ticker-7));*/}
+		    			
+		    			if (line(x_ticker+first_x).equals(sevens(0))){ /*println(the_grid(y_ticker)(x_ticker-7) + " is now ");*/ the_grid(y_ticker)(x_ticker)= 7; /*println(the_grid(y_ticker)(x_ticker-7));*/}
+		    			
+		    			if (line(x_ticker+first_x).equals(eigths(0))){ /*println(the_grid(y_ticker)(x_ticker-7) + " is now ");*/ the_grid(y_ticker)(x_ticker)= 8; /*println(the_grid(y_ticker)(x_ticker-7));*/}
+		    			
+		    			if (line(x_ticker+first_x).equals(nines(0))){ /*println(the_grid(y_ticker)(x_ticker-7) + " is now ");*/ the_grid(y_ticker)(x_ticker)= 9; /*println(the_grid(y_ticker)(x_ticker-7));*/}
+		    			//println("y "+ y_ticker + "  x " + (x_ticker-7) + " with value "+ the_grid(y_ticker)(x_ticker-7) + " is now 2    " + (line(x_ticker))); println(the_grid(y_ticker)(x_ticker-7) + "     but it int though");
+		    			if (x_ticker > line.length-20){}
+		    			}} }}
+		    //println("55");
+		    
+		    if (line.length > 10){ var x2 = 0;// for (x2<-0 to x){println( "y_tick " + y_ticker + "                     x " + x2); println(the_grid(y_ticker)(x2))};println("5555");
+		    if (line(9).equals(hash(0)) && line(10).equals(hash(0)) && line(11).equals(hash(0)) && line(7).equals(hash(0)) && line(8).equals(hash(0))){if ( found_island == 1 ){
+		    found_island=0;
+		    }}
+		    
+		}
+		if (found_island ==2){ found_island = 1}
+		}
+		/*println("after check")
+		var d = 0;
+			for(d <- 0 to the_grid.length-1){
+			      var e = 0;
+			      for(e <- 0 to the_grid(0).length-1){
+			      	println(the_grid(d)(e).toString);
+		}	      	                             }
+		*/
+		
+		to_text_file_mini(the_grid)
+		return (the_grid)
+}                                                 //> read_text_file_and_build_island: (filename: String)Array[Array[Int]]
+  
                                                   
-  // x dimension, y dimension, ratio of water to land, which shape, number of imperfections, name, number of significant oceanic features
-  make_island(140,30 ,0.4,"square",20, "jackland 1",3,2)
+  //         x dimension, y dimension, ratio of water to land, which shape, number of imperfections, name    ,    number of significant oceanic features , number of land features
+  make_island(140        ,     30    ,         0.4           ,  "square"  ,          20         , "jackland 2"          ,  3                                  ,2)
+                                                  
                                                   
 }
